@@ -1,15 +1,19 @@
-import styled from "@emotion/styled";
+import { useState } from "react";
+import styled from "@emotion/styled/macro";
 import { css } from "@emotion/react";
-import { RiArrowDropLeftLine, RiArrowDropRightLine } from "react-icons/ri";
-import CarouselImg1 from "../assets/1.jpg";
-import CarouselImg2 from "../assets/2.jpg";
-import CarouselImg3 from "../assets/3.jpg";
-import CarouselImg4 from "../assets/4.jpg";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import CarouselImg1 from "../assets/1.png";
+import CarouselImg2 from "../assets/2.png";
+import CarouselImg3 from "../assets/3.png";
+import CarouselImg4 from "../assets/4.png";
 
-const Base = styled.div``;
+const Base = styled.div`
+  padding: 2rem;
+`;
 
 const Container = styled.div`
   position: relative;
+  border-radius: 12px;
 `;
 
 /**
@@ -28,7 +32,7 @@ const ArrowButton = styled.button<{ pos: "left" | "right" }>`
   top: 50%;
   z-index: 1;
   padding: 8px 12px;
-  font-size: 48px;
+  font-size: 64px;
   font-weight: bold;
   background-color: transparent;
   color: #fff;
@@ -42,7 +46,7 @@ const ArrowButton = styled.button<{ pos: "left" | "right" }>`
         `
       : css`
           right: 0;
-        `}
+        `};
 `;
 
 const CarouselList = styled.ul`
@@ -51,6 +55,7 @@ const CarouselList = styled.ul`
   padding: 0;
   display: flex;
   overflow: hidden;
+  border-radius: 12px;
 `;
 
 /**
@@ -68,10 +73,13 @@ const CarouselListItem = styled.li<{ activeIndex: number }>`
   width: 100%;
   flex: 1 0 100%;
   transform: translateX(-${({ activeIndex }) => activeIndex * 100}%);
-  transition: 200ms ease;
+  transition: 300ms ease;
+  border-radius: 12px;
+  border: none;
   > img {
-    width: 100%;
+    max-width: 100%;
     height: fit-content;
+    border-radius: 12px;
   }
 `;
 
@@ -87,10 +95,13 @@ const CarouselListItem = styled.li<{ activeIndex: number }>`
 */
 
 const NavButton = styled.button<{ isActive?: boolean }>`
-  width: 4px;
-  height: 4px;
-  background-color: #000;
-  opacity: ${({ isActive }) => (isActive ? 0.3 : 0.1)};
+  width: 44px;
+  height: 24px;
+  border: none;
+  border-radius: 2px;
+  background-color: #8d7055;
+  opacity: ${({ isActive }) => (isActive ? 0.6 : 0.2)};
+  cursor: pointer;
 `;
 
 const NavItem = styled.li`
@@ -100,11 +111,11 @@ const NavItem = styled.li`
 const Nav = styled.ul`
   list-style: none;
   padding: 0;
-  margin: 0 auto;
+  margin: 20px auto 0;
   display: flex;
   justify-content: center;
   ${NavItem} + ${NavItem} {
-    margin-left: 4px;
+    margin-left: 8px;
   }
 `;
 
@@ -112,30 +123,54 @@ const Nav = styled.ul`
 const banners = [CarouselImg1, CarouselImg2, CarouselImg3, CarouselImg4];
 
 const Carousel: React.FC = () => {
+  const [activeIndex, setActiveIndex] = useState<number>(0);
+
+  const handleNext = () => {
+    // % banners. length is necessary to set activeIndex to the 0 once activeIndex hits the last one.
+    setActiveIndex((prev) => (prev + 1) % banners.length);
+  };
+
+  const handlePrev = () => {
+    setActiveIndex((prev) => (prev - 1 + banners.length) % banners.length);
+  };
+
+  const handleGoTo = (idx: number) => {
+    setActiveIndex(idx);
+  };
+
   return (
     <Base>
       <Container>
-        <ArrowButton pos="left">
-          <RiArrowDropLeftLine />
-        </ArrowButton>
-        <ArrowButton pos="right">
-          <RiArrowDropRightLine />
-        </ArrowButton>
+        {banners.length && (
+          <ArrowButton pos="left" onClick={handlePrev}>
+            <IoIosArrowBack />
+          </ArrowButton>
+        )}
         <CarouselList>
-          {banners.map((banner, idx) => (
-            <CarouselListItem key={idx}>
-              <img src={banner} alt={"banner" + idx} />
+          {banners.map((url, index) => (
+            <CarouselListItem activeIndex={activeIndex} key={index}>
+              <img src={url} alt={`carousel demo img ${index}`} />
             </CarouselListItem>
           ))}
         </CarouselList>
+        {banners.length && (
+          <ArrowButton pos="right" onClick={handleNext}>
+            <IoIosArrowForward />
+          </ArrowButton>
+        )}
       </Container>
-      <Nav>
-        {Array.from({ length: banners.length }).map((_, idx) => (
-          <NavItem key={idx}>
-            <NavButton />
-          </NavItem>
-        ))}
-      </Nav>
+      {banners.length && (
+        <Nav>
+          {Array.from({ length: banners.length }).map((_, index) => (
+            <NavItem key={index}>
+              <NavButton
+                isActive={activeIndex === index}
+                onClick={() => handleGoTo(index)}
+              />
+            </NavItem>
+          ))}
+        </Nav>
+      )}
     </Base>
   );
 };
