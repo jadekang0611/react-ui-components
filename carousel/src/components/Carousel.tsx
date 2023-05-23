@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "@emotion/styled/macro";
 import { css } from "@emotion/react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
@@ -77,7 +77,7 @@ const CarouselListItem = styled.li<{ activeIndex: number }>`
   border-radius: 12px;
   border: none;
   > img {
-    max-width: 100%;
+    width: 100%;
     height: fit-content;
     border-radius: 12px;
   }
@@ -124,6 +124,7 @@ const banners = [CarouselImg1, CarouselImg2, CarouselImg3, CarouselImg4];
 
 const Carousel: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState<number>(0);
+  const [isFocused, setIsFocused] = useState<boolean>(false);
 
   const handleNext = () => {
     // % banners. length is necessary to set activeIndex to the 0 once activeIndex hits the last one.
@@ -138,8 +139,24 @@ const Carousel: React.FC = () => {
     setActiveIndex(idx);
   };
 
+  const handleMouseEnter = () => setIsFocused(true);
+
+  const handleMouseLeave = () => setIsFocused(false);
+
+  useEffect(() => {
+    let intervalId: NodeJS.Timeout;
+
+    if (!isFocused) {
+      intervalId = setInterval(handleNext, 3000);
+    }
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [isFocused]);
+
   return (
-    <Base>
+    <Base onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <Container>
         {banners.length && (
           <ArrowButton pos="left" onClick={handlePrev}>

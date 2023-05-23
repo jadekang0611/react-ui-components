@@ -8,7 +8,6 @@ Carousel refers to a rotating merry-go-round in its literal sense. On the web, i
 
 ## What's Important in Building Carousel UI?
 
-- Do not use autoplay.
 - Allow users to directly control the carousel.
 - For most users, the carousel is a common UI element, and they are already familiar with interacting with it.
 - Write concise and clear copy.
