@@ -1,5 +1,6 @@
 # Skeleton
 
+<img src="./src/assets/skeleton.png" />
 ## Pros & Cons of Skeleton Component
 
 <table>
