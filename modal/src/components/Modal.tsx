@@ -1,6 +1,8 @@
 import styled from "@emotion/styled/macro";
 import { ReactNode } from "react";
 import Portal from "./Portal";
+import { CSSTransition } from "react-transition-group";
+import "./Modal.css";
 
 const Overlay = styled.div`
   position: fixed;
@@ -39,16 +41,14 @@ interface Props {
 
 const Modal: React.FC<Props> = ({ children, isOpen, onClose, selector }) => {
   return (
-    <>
-      {isOpen ? (
-        <Portal selector={selector}>
-          <Overlay>
-            <Dim onClick={onClose} />
-            <Container>{children}</Container>
-          </Overlay>
-        </Portal>
-      ) : null}
-    </>
+    <CSSTransition in={isOpen} timeout={300} classNames="modal" unmountOnExit>
+      <Portal selector={selector}>
+        <Overlay>
+          <Dim onClick={onClose} />
+          <Container>{children}</Container>
+        </Overlay>
+      </Portal>
+    </CSSTransition>
   );
 };
 
