@@ -37,6 +37,7 @@ I built this repository not only to gain a deep understanding of the ins and out
 <img src="./images/skeleton.gif" width="300px"/>
 <img src="./images/carousel.gif" width="300px" />
 <img src="./images/pagination.gif" width="300px" />
+<img src="./images/infinite-scroll-v1.gif" width="300px" />
 
 Feel free to explore the directories and utilize these UI components to enhance the visual appeal and functionality of your web application without depending on UI libraries.
 
