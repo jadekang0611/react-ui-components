@@ -3,10 +3,14 @@ import axios from "axios";
 import styled from "@emotion/styled/macro";
 import { throttle } from "throttle-debounce";
 
-import { Passenger, Response } from "./interface/Api";
+import { User, Response } from "./interface/Api";
+import EmployeeCard from "./components/EmployeeCard";
 
-const ListItem = styled.li`
+const Title = styled.h2`
   font-size: 36px;
+  text-align: center;
+  color: #40e0d0;
+  font-family: "Quicksand", sans-serif;
 `;
 
 const List = styled.ul`
@@ -14,19 +18,20 @@ const List = styled.ul`
   overflow-y: scroll;
   list-style: none;
   margin: 0;
-  padding: 0;
+  padding: 20px 0;
   width: 100%;
-  height: 512px;
-  ${ListItem} + ${ListItem} {
-    margin-top: 12px;
-  }
+  height: 600px;
+  display: flex;
+  flex-wrap: wrap;
+  background-color: #f4f4f4;
+  justify-content: space-around;
 `;
 
 function App() {
   const scrollRef = useRef<HTMLUListElement | null>(null);
   const pageRef = useRef<number>(0);
 
-  const [items, setItems] = useState<Array<Passenger>>([]);
+  const [items, setItems] = useState<Array<User>>([]);
   const [isLast, setIsLast] = useState<boolean>(false);
   const [isScrollBottom, setIsScrollBottom] = useState<boolean>(false);
 
@@ -45,12 +50,17 @@ function App() {
 
     try {
       const res = await axios.get<Response>(
-        "https://api.instantwebtools.net/v1/passenger",
-        { params }
+        "https://dummyapi.io/data/v1/user",
+        {
+          params,
+          headers: {
+            "app-id": "647116479b0e492cae1c3b42",
+          },
+        }
       );
 
       setItems(init ? res.data.data : items.concat(res.data.data));
-      setIsLast(res.data.totalPages === pageRef.current);
+      setIsLast(res.data.total === pageRef.current);
     } catch (e) {
       console.error(e);
     }
@@ -69,10 +79,18 @@ function App() {
   }, []);
 
   return (
-    <div>
+    <div style={{ padding: 12 }}>
+      <Title>Our Employee List</Title>
       <List ref={scrollRef} onScroll={handleScroll}>
         {items.map((item) => (
-          <ListItem key={item._id}>{item.name}</ListItem>
+          <EmployeeCard
+            key={item.id}
+            id={item.id}
+            firstName={item.firstName}
+            lastName={item.lastName}
+            picture={item.picture}
+            title={item.title}
+          />
         ))}
       </List>
     </div>
